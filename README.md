@@ -3,9 +3,9 @@
 ## 1. Identificação do projeto
 
 **Disciplina:** Integração DevOps
-**Projeto:** TaskFlow
+**Projeto:** TaskFlow - Gerenciador de Tarefas
 **Instituição:** CEUB
-**Etapa:** Marco 1 — Integração Contínua (CI)
+**Etapa:** Entrega 1 — Integração Contínua (CI)
 
 ## 2. Integrantes
 
@@ -89,8 +89,8 @@ A tabela `tasks` possui os seguintes campos:
 ### Clonar o projeto
 
 ```bash
-git clone URL_DO_REPOSITORIO
-cd taskflow-devops
+git clone https://github.com/IsabellaSenaa/ProjetoDevOps26.git
+cd ProjetoDevOps26
 ```
 
 ### Criar ambiente virtual
@@ -130,7 +130,7 @@ http://127.0.0.1:5000
 Para executar a suíte de testes:
 
 ```bash
-pytest
+python -m pytest tests -v
 ```
 
 Os testes verificam funcionalidades como:
