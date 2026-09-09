@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TaskFlow</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 8px 0 15px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .task {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #777;
+        }
+
+        .acoes {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>TaskFlow</h1>
+
+    <form action="/adicionar" method="POST">
+
+        <h2>Nova tarefa</h2>
+
+        <label for="title">Título:</label>
+
+        <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Digite o título"
+            required
+        >
+
+        <label for="description">Descrição:</label>
+
+        <textarea
+            id="description"
+            name="description"
+            placeholder="Digite a descrição"
+        ></textarea>
+
+        <button type="submit">
+            Adicionar tarefa
+        </button>
+
+    </form>
+
+    <h2>Minhas tarefas</h2>
+
+    {% if tarefas %}
+
+        {% for tarefa in tarefas %}
+
+            <div class="task">
+
+                {% if tarefa["completed"] %}
+
+                    <h3 class="completed">
+                        {{ tarefa["title"] }}
+                    </h3>
+
+                {% else %}
+
+                    <h3>
+                        {{ tarefa["title"] }}
+                    </h3>
+
+                {% endif %}
+
+                <p>
+                    {{ tarefa["description"] }}
+                </p>
+
+                <div class="acoes">
+
+                    {% if not tarefa["completed"] %}
+
+                        <form
+                            action="/concluir/{{ tarefa['id'] }}"
+                            method="POST"
+                            style="display:inline;"
+                        >
+
+                            <button type="submit">
+                                Concluir
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                    <form
+                        action="/excluir/{{ tarefa['id'] }}"
+                        method="POST"
+                        style="display:inline;"
+                    >
+
+                        <button type="submit">
+                            Excluir
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            Nenhuma tarefa cadastrada.
+        </p>
+
+    {% endif %}
+
+</body>
+
+</html>
