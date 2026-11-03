@@ -217,3 +217,78 @@ A primeira etapa do projeto contempla:
 * [x] Pipeline de CI;
 * [x] GitHub Actions;
 * [x] Documentação inicial.
+
+## 16. Conteinerização com Docker
+
+O TaskFlow utiliza Docker para empacotar a aplicação e suas dependências em uma imagem.
+
+Para construir e iniciar a aplicação:
+
+```bash
+docker compose up --build -d
+```
+
+Para verificar os contêineres:
+
+```bash
+docker compose ps
+```
+
+Para visualizar os logs:
+
+```bash
+docker compose logs
+```
+
+Para encerrar a aplicação:
+
+```bash
+docker compose down
+```
+
+A aplicação estará disponível em:
+
+http://localhost:5000
+
+## 17. Entrega Contínua (CD)
+
+O projeto utiliza GitHub Actions para automatizar a publicação das imagens Docker no GitHub Container Registry (GHCR).
+
+A pipeline de CD é acionada pela criação de uma tag de versão no Git.
+
+Exemplo:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Após o acionamento, a pipeline:
+
+1. Executa os testes automatizados;
+2. Constrói a imagem Docker;
+3. Publica a imagem no GHCR;
+4. Realiza um deploy simulado;
+5. Valida o funcionamento da aplicação.
+
+## 18. Persistência de dados
+
+O banco de dados utilizado é SQLite.
+
+A persistência é configurada por meio de volume Docker, permitindo manter os dados após a reinicialização dos contêineres.
+
+## 19. Rollback
+
+O projeto possui documentação de rollback no arquivo:
+
+`docs/ROLLBACK.md`
+
+O procedimento permite retornar a uma versão anterior da imagem Docker em caso de falhas.
+
+## 20. Documentação da Entrega 02
+
+Os documentos complementares estão disponíveis na pasta `docs/`:
+
+- `ENTREGA_02.md` — descrição da infraestrutura e pipeline;
+- `TESTES_ENTREGA_02.md` — procedimentos de validação;
+- `ROLLBACK.md` — procedimento de recuperação de versão.
