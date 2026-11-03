@@ -1,0 +1,16 @@
+services:
+  taskflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - taskflow_data:/data
+    environment:
+      DATABASE_PATH: /data/tasks.db
+    restart: unless-stopped
+
+volumes:
+  taskflow_data:
