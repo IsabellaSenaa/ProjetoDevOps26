@@ -1,7 +1,8 @@
 import sqlite3
+import os
 
 
-DATABASE = "tasks.db"
+DATABASE = os.getenv("DATABASE_PATH", "tasks.db")
 
 
 def conectar():
