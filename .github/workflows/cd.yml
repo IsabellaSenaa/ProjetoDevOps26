@@ -1,0 +1,74 @@
+
+name: CD - Publicação e Homologação
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login no GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extrair metadados e versões
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Construir e publicar imagem
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Executar deploy simulado de homologação
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+        run: |
+          docker pull "$IMAGE"
+          docker run -d \
+            --name todo-api-homolog \
+            -p 8000:8000 \
+            -e DATABASE_URL=sqlite:////tmp/todo.db \
+            "$IMAGE"
+
+          for i in $(seq 1 20); do
+            if curl --fail http://localhost:8000/health; then
+              echo "Homologação concluída com sucesso."
+              exit 0
+            fi
+            sleep 3
+          done
+
+          echo "Falha no health check."
+          docker logs todo-api-homolog
+          exit 1
+
+      - name: Limpar ambiente temporário
+        if: always()
+        run: docker rm -f todo-api-homolog || true
